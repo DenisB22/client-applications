@@ -1,21 +1,21 @@
 import type { CreateTripRequestPayload, TripRequest } from '../types/tripRequest';
 
-const REQUEST_DELAY_MS = 550;
-
-function wait(ms = REQUEST_DELAY_MS) {
-  return new Promise((resolve) => {
-    window.setTimeout(resolve, ms);
-  });
-}
+const TRIP_REQUESTS_ENDPOINT = '/api/trip-requests';
 
 export async function submitTripRequest(
   payload: CreateTripRequestPayload,
 ): Promise<TripRequest> {
-  await wait();
+  const response = await fetch(TRIP_REQUESTS_ENDPOINT, {
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  });
 
-  return {
-    ...payload,
-    id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
-  };
+  if (!response.ok) {
+    throw new Error(`Trip request failed with status ${response.status}`);
+  }
+
+  return response.json() as Promise<TripRequest>;
 }

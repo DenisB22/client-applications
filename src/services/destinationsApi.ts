@@ -1,57 +1,51 @@
-import { destinations } from '../data/destinations';
 import type { Destination, DestinationFilters } from '../types/destination';
 
-const REQUEST_DELAY_MS = 450;
+const DESTINATIONS_ENDPOINT = '/api/destinations';
 
-function wait(ms = REQUEST_DELAY_MS) {
-  return new Promise((resolve) => {
-    window.setTimeout(resolve, ms);
-  });
-}
+async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(url, options);
 
-function matchesSearchText(destination: Destination, query: string) {
-  const normalizedQuery = query.trim().toLowerCase();
-
-  if (!normalizedQuery) {
-    return true;
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`);
   }
 
-  return [
-    destination.name,
-    destination.country,
-    destination.region,
-    destination.description,
-    destination.travelStyle,
-    destination.budgetLevel,
-    ...destination.highlights,
-  ].some((value) => value.toLowerCase().includes(normalizedQuery));
+  return response.json() as Promise<T>;
 }
 
 export async function getDestinations(): Promise<Destination[]> {
-  await wait();
-
-  return destinations;
+  return fetchJson<Destination[]>(DESTINATIONS_ENDPOINT);
 }
 
 export async function getDestinationById(id: string): Promise<Destination | undefined> {
-  await wait();
+  try {
+    return await fetchJson<Destination>(`${DESTINATIONS_ENDPOINT}/${encodeURIComponent(id)}`);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('status 404')) {
+      return undefined;
+    }
 
-  return destinations.find((destination) => destination.id === id);
+    throw error;
+  }
 }
 
 export async function searchDestinations(filters: DestinationFilters): Promise<Destination[]> {
-  await wait();
+  const searchParams = new URLSearchParams();
 
-  return destinations.filter((destination) => {
-    const matchesQuery = filters.query ? matchesSearchText(destination, filters.query) : true;
-    const matchesRegion = filters.region ? destination.region === filters.region : true;
-    const matchesBudget = filters.budgetLevel
-      ? destination.budgetLevel === filters.budgetLevel
-      : true;
-    const matchesTravelStyle = filters.travelStyle
-      ? destination.travelStyle === filters.travelStyle
-      : true;
+  if (filters.query) {
+    searchParams.set('query', filters.query);
+  }
 
-    return matchesQuery && matchesRegion && matchesBudget && matchesTravelStyle;
-  });
+  if (filters.region) {
+    searchParams.set('region', filters.region);
+  }
+
+  if (filters.budgetLevel) {
+    searchParams.set('budgetLevel', filters.budgetLevel);
+  }
+
+  if (filters.travelStyle) {
+    searchParams.set('travelStyle', filters.travelStyle);
+  }
+
+  return fetchJson<Destination[]>(`${DESTINATIONS_ENDPOINT}/search?${searchParams.toString()}`);
 }
