@@ -15,16 +15,17 @@ function AppLayout() {
       <AppBar position="sticky" color="default" elevation={0} className="app-header">
         <Container maxWidth="lg">
           <Toolbar disableGutters className="app-toolbar">
-            <Button
-              component={RouterLink}
-              to="/"
-              color="inherit"
-              className="brand-link"
-            >
-              ✈️ TripWise
+            <Button component={RouterLink} to="/" color="inherit" className="brand-link">
+              TripWise
             </Button>
 
-            <Stack component="nav" direction="row" spacing={1} className="primary-nav" aria-label="Primary navigation">
+            <Stack
+              component="nav"
+              direction="row"
+              spacing={1}
+              className="primary-nav"
+              aria-label="Primary navigation"
+            >
               {navigationItems.map((item) => {
                 const isActive =
                   item.to === '/' ? location.pathname === item.to : location.pathname.startsWith(item.to);
@@ -60,7 +61,8 @@ function AppLayout() {
               TripWise
             </Typography>
             <Typography variant="body2" color="text.secondary" textAlign={{ xs: 'left', sm: 'center' }}>
-              A frontend travel destinations guide built with React, TypeScript, React Router, Material UI, and Zustand.
+              A frontend travel destinations guide built with React, TypeScript, React Router, Material
+              UI, and Zustand.
             </Typography>
           </Stack>
         </Container>
