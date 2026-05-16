@@ -1,35 +1,68 @@
-import { Box, Button, Card, CardContent, Chip, Stack, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Grid } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
+import DestinationCard from '../components/DestinationCard';
+import EmptyState from '../components/EmptyState';
+import ErrorState from '../components/ErrorState';
+import LoadingState from '../components/LoadingState';
+import PageContainer from '../components/PageContainer';
+import SectionHeader from '../components/SectionHeader';
+import { getDestinations } from '../services/destinationsApi';
+import type { Destination } from '../types/destination';
 
 function DestinationsPage() {
-  return (
-    <Stack spacing={3}>
-      <Box>
-        <Chip label="Destinations" color="primary" variant="outlined" />
-        <Typography component="h1" variant="h3" fontWeight={800} mt={2} gutterBottom>
-          Explore curated destinations
-        </Typography>
-        <Typography variant="h6" color="text.secondary" maxWidth="760px">
-          This page will soon load the TripWise destination catalog from the mock API and render it as a responsive card grid.
-        </Typography>
-      </Box>
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-      <Card className="placeholder-card">
-        <CardContent>
-          <Stack spacing={2}>
-            <Typography component="h2" variant="h5" fontWeight={700}>
-              Destination list coming next
-            </Typography>
-            <Typography color="text.secondary">
-              Iteration 5 will add real destination cards, loading states, error handling, and links into each destination details page.
-            </Typography>
-            <Button component={RouterLink} to="/destinations/example-id" variant="outlined">
-              Preview details route
-            </Button>
-          </Stack>
-        </CardContent>
-      </Card>
-    </Stack>
+  const loadDestinations = useCallback(async () => {
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    try {
+      const destinationResults = await getDestinations();
+      setDestinations(destinationResults);
+    } catch {
+      setErrorMessage('We could not load the destination catalog. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadDestinations();
+  }, [loadDestinations]);
+
+  return (
+    <PageContainer>
+      <SectionHeader
+        eyebrow="Destinations"
+        title="Explore curated destinations"
+        description="Browse TripWise destination ideas with ratings, travel styles, budget levels, best seasons, and quick links into each details page."
+      />
+
+      {isLoading ? <LoadingState message="Loading destinations..." /> : null}
+
+      {!isLoading && errorMessage ? (
+        <ErrorState message={errorMessage} onRetry={loadDestinations} />
+      ) : null}
+
+      {!isLoading && !errorMessage && destinations.length === 0 ? (
+        <EmptyState
+          title="No destinations found"
+          message="The destination catalog is empty right now. Check back again soon."
+        />
+      ) : null}
+
+      {!isLoading && !errorMessage && destinations.length > 0 ? (
+        <Grid container spacing={3}>
+          {destinations.map((destination) => (
+            <Grid item xs={12} sm={6} lg={4} key={destination.id}>
+              <DestinationCard destination={destination} />
+            </Grid>
+          ))}
+        </Grid>
+      ) : null}
+    </PageContainer>
   );
 }
 
