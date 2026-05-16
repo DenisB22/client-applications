@@ -11,26 +11,125 @@ body {
   min-height: 100vh;
 }
 
+#root {
+  min-height: 100vh;
+}
+
 .app-shell {
   display: flex;
   min-height: 100vh;
-  align-items: center;
+  flex-direction: column;
   background:
     radial-gradient(circle at top left, rgba(25, 118, 210, 0.2), transparent 30rem),
     linear-gradient(135deg, #f7fbff 0%, #dbeafe 100%);
-  padding: 48px 16px;
 }
 
-.hero-card {
-  border: 1px solid rgba(25, 118, 210, 0.16);
-  border-radius: 32px;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 24px 80px rgba(31, 56, 88, 0.16);
-  padding: 48px;
+.app-header {
+  border-bottom: 1px solid rgba(25, 118, 210, 0.12);
+  backdrop-filter: blur(16px);
+  background-color: rgba(255, 255, 255, 0.86) !important;
 }
 
-@media (max-width: 600px) {
-  .hero-card {
+.app-toolbar {
+  display: flex;
+  min-height: 72px;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand-link {
+  border-radius: 999px !important;
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+}
+
+.primary-nav {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.nav-link {
+  border-radius: 999px !important;
+  text-transform: none !important;
+}
+
+.nav-link.active {
+  background-color: rgba(25, 118, 210, 0.12);
+  color: #0d47a1;
+}
+
+.app-main {
+  flex: 1;
+  padding: 56px 0 72px;
+}
+
+.app-footer {
+  border-top: 1px solid rgba(25, 118, 210, 0.12);
+  background: rgba(255, 255, 255, 0.76);
+  padding: 28px 0;
+}
+
+.page-hero,
+.placeholder-card,
+.info-card {
+  border: 1px solid rgba(25, 118, 210, 0.14) !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 24px 80px rgba(31, 56, 88, 0.14) !important;
+}
+
+.page-hero {
+  padding: 56px;
+}
+
+.info-card {
+  flex: 1;
+}
+
+.placeholder-card .MuiCardContent-root,
+.info-card .MuiCardContent-root {
+  padding: 32px;
+}
+
+.placeholder-card .MuiCardContent-root:last-child,
+.info-card .MuiCardContent-root:last-child {
+  padding-bottom: 32px;
+}
+
+.not-found-page {
+  display: grid;
+  min-height: 48vh;
+  place-items: center;
+}
+
+@media (max-width: 700px) {
+  .app-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 16px 0;
+  }
+
+  .primary-nav {
+    justify-content: flex-start;
+  }
+
+  .app-main {
+    padding: 36px 0 56px;
+  }
+
+  .page-hero {
     padding: 32px 24px;
+  }
+
+  .placeholder-card .MuiCardContent-root,
+  .info-card .MuiCardContent-root {
+    padding: 24px;
+  }
+
+  .placeholder-card .MuiCardContent-root:last-child,
+  .info-card .MuiCardContent-root:last-child {
+    padding-bottom: 24px;
   }
 }
