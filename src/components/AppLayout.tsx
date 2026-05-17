@@ -6,6 +6,7 @@ const navigationItems = [
   { label: 'Destinations', to: '/destinations' },
   { label: 'Saved', to: '/saved' },
   { label: 'Plan a Trip', to: '/plan-trip' },
+  { label: 'Requests', to: '/trip-requests' },
 ];
 
 function AppLayout() {
