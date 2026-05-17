@@ -1,8 +1,14 @@
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import DestinationCard from '../components/DestinationCard';
+import ErrorState from '../components/ErrorState';
 import FeatureCard from '../components/FeatureCard';
+import LoadingState from '../components/LoadingState';
 import PageContainer from '../components/PageContainer';
 import SectionHeader from '../components/SectionHeader';
+import { getDestinations } from '../services/destinationsApi';
+import type { Destination } from '../types/destination';
 
 const features = [
   {
@@ -26,6 +32,28 @@ const features = [
 ];
 
 function HomePage() {
+  const [featuredDestinations, setFeaturedDestinations] = useState<Destination[]>([]);
+  const [isLoadingFeatured, setIsLoadingFeatured] = useState(true);
+  const [featuredError, setFeaturedError] = useState<string | null>(null);
+
+  const loadFeaturedDestinations = useCallback(async () => {
+    setIsLoadingFeatured(true);
+    setFeaturedError(null);
+
+    try {
+      const destinations = await getDestinations();
+      setFeaturedDestinations(destinations.slice(0, 3));
+    } catch {
+      setFeaturedError('We could not load featured destinations right now.');
+    } finally {
+      setIsLoadingFeatured(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadFeaturedDestinations();
+  }, [loadFeaturedDestinations]);
+
   return (
     <PageContainer>
       <Box
@@ -123,6 +151,33 @@ function HomePage() {
           </Grid>
         ))}
       </Grid>
+
+      <SectionHeader
+        eyebrow="Featured"
+        title="Start with a few favorite routes"
+        description="These destination previews are loaded from the same mock HTTP API used by the catalog."
+        action={
+          <Button component={RouterLink} to="/destinations" variant="outlined">
+            Explore all
+          </Button>
+        }
+      />
+
+      {isLoadingFeatured ? <LoadingState message="Loading featured destinations..." /> : null}
+
+      {!isLoadingFeatured && featuredError ? (
+        <ErrorState message={featuredError} onRetry={loadFeaturedDestinations} />
+      ) : null}
+
+      {!isLoadingFeatured && !featuredError ? (
+        <Grid container spacing={3}>
+          {featuredDestinations.map((destination) => (
+            <Grid item xs={12} md={4} key={destination.id}>
+              <DestinationCard destination={destination} />
+            </Grid>
+          ))}
+        </Grid>
+      ) : null}
 
       <Box
         sx={{
