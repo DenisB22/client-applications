@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { useTravelStore } from '../store/travelStore';
 import type { Destination } from '../types/destination';
 
 type DestinationCardProps = {
@@ -17,6 +18,9 @@ type DestinationCardProps = {
 };
 
 function DestinationCard({ destination }: DestinationCardProps) {
+  const isFavorite = useTravelStore((state) => state.isFavorite(destination.id));
+  const toggleFavorite = useTravelStore((state) => state.toggleFavorite);
+
   return (
     <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       <CardMedia
@@ -62,14 +66,26 @@ function DestinationCard({ destination }: DestinationCardProps) {
           </Typography>
         </Stack>
 
-        <Button
-          component={RouterLink}
-          to={`/destinations/${destination.id}`}
-          variant="contained"
-          sx={{ alignSelf: 'flex-start', mt: 1 }}
-        >
-          View details
-        </Button>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mt: 1 }}>
+          <Button
+            component={RouterLink}
+            to={`/destinations/${destination.id}`}
+            variant="contained"
+            sx={{ alignSelf: 'flex-start' }}
+          >
+            View details
+          </Button>
+          <Button
+            variant={isFavorite ? 'contained' : 'outlined'}
+            color={isFavorite ? 'secondary' : 'primary'}
+            onClick={() => {
+              toggleFavorite(destination.id);
+            }}
+            sx={{ alignSelf: 'flex-start' }}
+          >
+            {isFavorite ? 'Saved' : 'Save'}
+          </Button>
+        </Stack>
       </CardContent>
     </Card>
   );

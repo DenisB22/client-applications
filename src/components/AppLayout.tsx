@@ -4,6 +4,7 @@ import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom';
 const navigationItems = [
   { label: 'Home', to: '/' },
   { label: 'Destinations', to: '/destinations' },
+  { label: 'Saved', to: '/saved' },
   { label: 'Plan a Trip', to: '/plan-trip' },
 ];
 

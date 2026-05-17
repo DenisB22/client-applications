@@ -17,6 +17,7 @@ import ErrorState from '../components/ErrorState';
 import LoadingState from '../components/LoadingState';
 import PageContainer from '../components/PageContainer';
 import { getDestinationById } from '../services/destinationsApi';
+import { useTravelStore } from '../store/travelStore';
 import type { Destination } from '../types/destination';
 
 function DestinationDetailsPage() {
@@ -24,6 +25,8 @@ function DestinationDetailsPage() {
   const [destination, setDestination] = useState<Destination | undefined>();
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isFavorite = useTravelStore((state) => (id ? state.isFavorite(id) : false));
+  const toggleFavorite = useTravelStore((state) => state.toggleFavorite);
 
   const loadDestination = useCallback(async () => {
     if (!id) {
@@ -80,9 +83,20 @@ function DestinationDetailsPage() {
 
   return (
     <PageContainer>
-      <Button component={RouterLink} to="/destinations" variant="outlined" sx={{ alignSelf: 'flex-start' }}>
-        Back to destinations
-      </Button>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems="flex-start">
+        <Button component={RouterLink} to="/destinations" variant="outlined">
+          Back to destinations
+        </Button>
+        <Button
+          variant={isFavorite ? 'contained' : 'outlined'}
+          color={isFavorite ? 'secondary' : 'primary'}
+          onClick={() => {
+            toggleFavorite(destination.id);
+          }}
+        >
+          {isFavorite ? 'Saved destination' : 'Save destination'}
+        </Button>
+      </Stack>
 
       <Card sx={{ overflow: 'hidden' }}>
         <CardMedia
