@@ -69,7 +69,7 @@ export const destinations: Destination[] = [
     description:
       'Colorful souks, tiled courtyards, gardens, rooftop dining, and day trips toward the Atlas Mountains.',
     imageUrl:
-      'https://images.unsplash.com/photo-1548018560-c7196548e84d?auto=format&fit=crop&w=1200&q=80',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Medina_souk%2C_Marrakech%2C_Morocco_-_panoramio.jpg/1280px-Medina_souk%2C_Marrakech%2C_Morocco_-_panoramio.jpg',
     rating: 4.6,
     budgetLevel: 'Budget',
     travelStyle: 'Culture',

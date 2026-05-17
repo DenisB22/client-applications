@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 
 type EmptyStateProps = {
@@ -22,7 +22,7 @@ function EmptyState({ title, message, action }: EmptyStateProps) {
           {title}
         </Typography>
         <Typography color="text.secondary">{message}</Typography>
-        {action ? <Button variant="outlined">{action}</Button> : null}
+        {action}
       </Stack>
     </Box>
   );
